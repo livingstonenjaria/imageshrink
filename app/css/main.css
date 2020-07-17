@@ -1,0 +1,51 @@
+/* font-family: 'Source Code Pro', monospace; */
+strong {
+  font-weight: 700;
+}
+span {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.9rem;
+}
+i {
+  margin: 0 10px 0 0;
+}
+body {
+  font-family: 'Karla', sans-serif;
+}
+.collection {
+  margin: 20px 0;
+}
+.output {
+  margin: 30px;
+}
+.file-field {
+  margin: 30px;
+}
+.range-field {
+  margin: 30px;
+}
+.info {
+  background-color: #cce5fc;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 5px solid #75b9f6;
+  color: #0a5eac;
+}
+.success {
+  background-color: #d4edda;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 5px solid #94d2a3;
+  color: #255824;
+}
+.error {
+  background-color: #f8d7da;
+  border-left: 5px solid #ea8891;
+  color: #721c24;
+}
+.file-path-wrapper {
+  margin: 10px 0;
+}
+.about-img {
+  margin: 0 10px;
+}

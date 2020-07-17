@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline'"
+    />
+    <title>ImageShrink</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    /> -->
+    <link rel="stylesheet" href="css/materialize.min.css" />
+    <link rel="stylesheet" href="css/animate.css" />
+    <link rel="stylesheet" href="css/themify-icons.css" />
+    <link rel="stylesheet" href="css/boxicons.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div class="container center-align">
+      <h3 class="brand-logo"><i class="ti-image"></i>ImageShrink</h3>
+      <p>Choose an image to resize</p>
+      <form action="" id="image-form">
+        <div class="file-field input-field row">
+          <div class="btn col s12">
+            <span>Browse</span>
+            <input type="file" id="img" />
+          </div>
+          <div class="file-path-wrapper col s12">
+            <input
+              type="text"
+              class="file-path validate"
+              placeholder="Upload File"
+            />
+          </div>
+        </div>
+        <div class="info">
+          <strong>Quality : </strong>
+          <span>The lower the quality, the smaller the size</span>
+        </div>
+        <p class="range-field">
+          <input type="range" min="0" max="100" id="slider" />
+        </p>
+        <input type="submit" value="Resize" class="btn black" />
+      </form>
+      <div class="card output">
+        <div class="card-content">
+          <strong>Output Path :</strong> <span id="output-path"></span>
+        </div>
+      </div>
+    </div>
+    <script src="js/materialize.min.js"></script>
+    <script>
+      const path = require('path')
+      const os = require('os')
+      const { ipcRenderer } = require('electron')
+
+      const date = new Date()
+      const month = date.toLocaleString('en-US', { month: 'short' })
+      const fullDate = date.getDate() + '_' + month + '_' + date.getFullYear()
+
+      const form = document.getElementById('image-form')
+      const slider = document.getElementById('slider')
+      const img = document.getElementById('img')
+      const destination = path.join(
+        os.homedir(),
+        'Desktop',
+        'imageshrink',
+        fullDate
+      )
+
+      document.getElementById('output-path').innerText = destination
+      //   * On Submit
+      form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        if (img.files.length == 0) {
+          let errorToastHTML =
+            '<p class="valign-wrapper">' +
+            '<i class="bx bx-bug bx-sm animate__animated animate__heartBeat animate__infinite"></i>' +
+            'Error: No image provided, please provide one' +
+            '</p>'
+          return M.toast({
+            html: errorToastHTML,
+            classes: 'error',
+          })
+        }
+        const imgPath = img.files[0].path
+        const quality = slider.value
+        ipcRenderer.send('image:minimize', {
+          imgPath,
+          quality,
+          destination,
+        })
+      })
+      //   * On Done
+      ipcRenderer.on('image:done', () => {
+        let toastHTML =
+          `<p class="valign-wrapper">` +
+          `<i class="bx bx-layer bx-sm animate__animated animate__heartBeat animate__infinite"></i>` +
+          `Success: Image resized to ${slider.value}% quality` +
+          `</p>`
+        return M.toast({
+          html: toastHTML,
+          classes: 'success',
+        })
+      })
+    </script>
+    >
+  </body>
+</html>
